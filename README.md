@@ -19,9 +19,13 @@ api = "http://localhost:65445/api/json/v2"
 [[workflow]]
 
 name = "emcodem_guisubmit_concat_different_formats"
+
 startproc = "20221022-1124-2650-58ea-85fbe7da8009"
+
 i_file_count = "%count%"
+
 s_final_deliver_extension = "mxf"
+
 s_final_deliver_path = "\\\\localhost\\c$\\temp"
 
 There can be multiple workflow sections.
