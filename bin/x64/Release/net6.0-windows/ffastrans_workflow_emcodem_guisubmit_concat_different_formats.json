@@ -1,0 +1,589 @@
+﻿{
+  "workflow": {
+    "wf_id": "20221022-1114-4755-32a3-ceb86ce253da",
+    "wf_name": "emcodem_guisubmit_concat_different_formats",
+    "wf_folder": "",
+    "description": "",
+    "updated": "2022-10-23T10:35:38.652+02:00",
+    "updated_by": "emcod@TWI1ANALYSE",
+    "created": "2022-10-22T11:14:47.553+02:00",
+    "general": {
+      "sleep": 5,
+      "priority": "0 (very low)",
+      "timeout_level": 3
+    },
+    "maintainance": {
+      "keep_all_workdir": true,
+      "keep_failed_workdir": false,
+      "cleanup_time": "04:00",
+      "records_age": 5,
+      "work_age": 5,
+      "run_on_days": 1234567
+    },
+    "special": {
+      "log_level": "1 (Basic)",
+      "force_32bit": false,
+      "read_timecode": false,
+      "protected": false,
+      "password": ""
+    },
+    "nodes": [
+      {
+        "id": "20221018-1422-0333-60f2-6a43e168f006",
+        "type": "other_textfile",
+        "custom_proc_guid": "",
+        "name": "Generate text file",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 593,
+        "pos_y": 75,
+        "execute_on": "success",
+        "outbounds": [
+          {
+            "type": "cmd_run",
+            "id": "20221019-0907-4952-73b0-0fc9e871622f"
+          }
+        ],
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "text": "%s_transcoded_files%",
+          "encoding": "UTF-8",
+          "out_file": "concat.txt",
+          "out_folder": "%s_job_work%\\done",
+          "append": false,
+          "set_to_source": true
+        },
+        "description": "Writes concat file into resolved folder"
+      },
+      {
+        "id": "20221019-0907-4952-73b0-0fc9e871622f",
+        "type": "cmd_run",
+        "custom_proc_guid": "",
+        "name": "Command executor",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 765,
+        "pos_y": 75,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "command": "\"%s_ffmpeg%\" -i \"%s_job_work%\\done\\concat.txt\" -y -codec copy -map 0 -ignore_unknown \"%s_final_deliver_path%\\%s_final_deliver_file_prefix%%s_original_name%.%s_final_deliver_extension%\"",
+          "out_source": "",
+          "omit_exit_code": false,
+          "console": false,
+          "show_command": true,
+          "stdout_var_name": "None",
+          "set_timeout": 120,
+          "error_timeout": 1
+        },
+        "outbounds": [
+          {
+            "type": "op_populate",
+            "id": "20221019-1208-4242-6d16-17bd34ae2d90"
+          }
+        ],
+        "description": "Finally merge all files and write into output folder"
+      },
+      {
+        "id": "20221019-0933-3262-3d6e-833a92800987",
+        "type": "op_foreach",
+        "custom_proc_guid": "",
+        "name": "For each",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 248,
+        "pos_y": 170,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "astring": "%s_source%",
+          "value": "%s_source%",
+          "index": "None"
+        },
+        "outbounds": [
+          {
+            "type": "op_populate",
+            "id": "20221019-1131-4411-24ed-52e68eddbbaf"
+          }
+        ],
+        "description": "Start one subjob for each file"
+      },
+      {
+        "id": "20221019-0934-1999-5b7a-7cc782cc4442",
+        "type": "plugin_htmlgui",
+        "custom_proc_guid": "512dccee-88e1-45b1-906c-9c8f53724805",
+        "name": "Files Find",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 420,
+        "pos_y": 75,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "custom_variables": {
+            "inputs": [
+              {
+                "id": "path",
+                "value": "%s_job_work%\\done"
+              },
+              {
+                "id": "include",
+                "value": "*"
+              },
+              {
+                "id": "exclude",
+                "value": ""
+              },
+              {
+                "id": "timespan",
+                "value": "0"
+              },
+              {
+                "id": "timespan_custom",
+                "value": ""
+              },
+              {
+                "id": "recurse",
+                "value": false
+              },
+              {
+                "id": "skip_folders",
+                "value": false
+              },
+              {
+                "id": "skip_files",
+                "value": false
+              },
+              {
+                "id": "sort_order",
+                "value": "Name Ascending"
+              },
+              {
+                "id": "output_type",
+                "value": "ffconcat"
+              }
+            ],
+            "outputs": [
+              {
+                "id": "output_found_array",
+                "value": "%s_transcoded_files%",
+                "data": ""
+              },
+              {
+                "id": "output_found_count",
+                "value": "",
+                "data": ""
+              },
+              {
+                "id": "output_files_1",
+                "value": "",
+                "data": ""
+              },
+              {
+                "id": "singlefilecontainer_innerHTML",
+                "value": "\n        <div><span style=\"width: 120px; display: inline-block;\">File 1<\/span><input name=\"output\" title=\"File Number X\" id=\"output_files_1\" oninput=\"check_valid_variable_name(this)\" value=\"\"><input name=\"open_vars\" width=\"2\" type=\"submit\" value=\"<\" data-parent=\"output_files_1\" data-user_vars_only=\"true\"><br><\/div>\n    ",
+                "data": ""
+              }
+            ]
+          }
+        },
+        "outbounds": [
+          {
+            "type": "other_textfile",
+            "id": "20221018-1422-0333-60f2-6a43e168f006"
+          }
+        ],
+        "description": "List transcoded sub-files"
+      },
+      {
+        "id": "20221019-1131-4411-24ed-52e68eddbbaf",
+        "type": "op_populate",
+        "custom_proc_guid": "",
+        "name": "Populate variables",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 420,
+        "pos_y": 170,
+        "execute_on": "success",
+        "description": "Parses filename from current path",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "variables": [
+            {
+              "name": "s_current_source_name",
+              "data": "$regext(\"%s_source%\",\"[^\\\\]+$\")",
+              "type": "string"
+            }
+          ]
+        },
+        "outbounds": [
+          {
+            "type": "enc_av_mp4",
+            "id": "20221023-1030-0082-1171-02ed12f128db"
+          }
+        ]
+      },
+      {
+        "id": "20221019-1137-3510-0c83-bdb2d967e5a1",
+        "type": "dest_folder",
+        "custom_proc_guid": "",
+        "name": "Folder",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 765,
+        "pos_y": 170,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "folder": "%s_job_work%\\done",
+          "suffix": "%s_current_source_name%",
+          "prefix": "",
+          "overwrite": false,
+          "unique": false,
+          "case": "None",
+          "drop_name": true,
+          "drop_ext": false,
+          "move": true,
+          "padding": "None"
+        },
+        "outbounds": [
+          {
+            "type": "other_textfile",
+            "id": "20221019-1206-3377-9f6c-393fbc376ea5"
+          },
+          {
+            "type": "other_textfile",
+            "id": "20221019-1138-0995-8811-49706aadd00c"
+          }
+        ],
+        "description": "Move into work_dir\\done"
+      },
+      {
+        "id": "20221019-1138-0995-8811-49706aadd00c",
+        "type": "other_textfile",
+        "custom_proc_guid": "",
+        "name": "Generate text file",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 765,
+        "pos_y": 266,
+        "execute_on": "error",
+        "description": "On error or success, write wait file, means that main workflow can go on once all subfiles are finished.",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "text": "done",
+          "encoding": "UTF-8",
+          "out_file": "%s_current_source_name%",
+          "out_folder": "%s_job_work%\\wait",
+          "append": false,
+          "set_to_source": false
+        },
+        "outbounds": [
+          {
+            "type": "op_populate",
+            "id": "20221019-1147-4430-2f63-2cd6b86e4514"
+          }
+        ]
+      },
+      {
+        "id": "20221019-1139-3908-5434-ce140ba7d048",
+        "type": "op_hold",
+        "custom_proc_guid": "",
+        "name": "Hold",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 248,
+        "pos_y": 75,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "syncronize": false,
+          "sync_time": 3600,
+          "sleep": false,
+          "sleep_time": 60,
+          "file_wait": true,
+          "files_list": "%s_files_to_wait_for%",
+          "files_count": "%i_ui_file_count%"
+        },
+        "description": "Waits for subjobs to finish, do not forget to set timeout to a reasonable time!",
+        "outbounds": [
+          {
+            "type": "plugin_htmlgui",
+            "id": "20221019-0934-1999-5b7a-7cc782cc4442"
+          }
+        ]
+      },
+      {
+        "id": "20221019-1147-4430-2f63-2cd6b86e4514",
+        "type": "op_populate",
+        "custom_proc_guid": "",
+        "name": "Populate variables",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 938,
+        "pos_y": 266,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "variables": [
+            {
+              "name": "s_success",
+              "data": "Error: %s_error% %s_current_source_name%",
+              "type": "string"
+            }
+          ]
+        },
+        "outbounds": []
+      },
+      {
+        "id": "20221019-1206-3377-9f6c-393fbc376ea5",
+        "type": "other_textfile",
+        "custom_proc_guid": "",
+        "name": "Generate text file",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 938,
+        "pos_y": 170,
+        "execute_on": "success",
+        "description": "On error or success, write wait file, means that main workflow can go on once all subfiles are finished.",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "text": "done",
+          "encoding": "UTF-8",
+          "out_file": "%s_current_source_name%",
+          "out_folder": "%s_job_work%\\wait",
+          "append": false,
+          "set_to_source": false
+        },
+        "outbounds": [
+          {
+            "type": "op_populate",
+            "id": "20221019-1206-5237-884c-5e694dfef23a"
+          }
+        ]
+      },
+      {
+        "id": "20221019-1206-5237-884c-5e694dfef23a",
+        "type": "op_populate",
+        "custom_proc_guid": "",
+        "name": "Populate variables",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 1110,
+        "pos_y": 170,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "variables": [
+            {
+              "name": "s_success",
+              "data": "Success: %s_current_source_name%",
+              "type": "string"
+            }
+          ]
+        },
+        "outbounds": []
+      },
+      {
+        "id": "20221019-1208-4242-6d16-17bd34ae2d90",
+        "type": "op_populate",
+        "custom_proc_guid": "",
+        "name": "Populate variables",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 938,
+        "pos_y": 75,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "variables": [
+            {
+              "name": "s_success",
+              "data": "Final Concat file: \"%s_final_deliver_path%\\%s_final_deliver_file_prefix%%s_original_name%.%s_final_deliver_extension%\"",
+              "type": "string"
+            }
+          ]
+        },
+        "description": "Set success msg of main job",
+        "outbounds": []
+      },
+      {
+        "id": "20221022-1124-2650-58ea-85fbe7da8009",
+        "type": "op_populate",
+        "custom_proc_guid": "",
+        "name": "Populate variables",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": true,
+        "pos_x": 75,
+        "pos_y": 75,
+        "execute_on": "success",
+        "preset": {
+          "name": "(custom)",
+          "id": null
+        },
+        "properties": {
+          "variables": [
+            {
+              "name": "s_regex_escaped_wait_dir",
+              "data": "$replace(\"%s_job_work%\\wait\\\",\"\\\",\"\\\\\")",
+              "type": "string"
+            },
+            {
+              "name": "s_files_to_wait_for",
+              "data": "$foreach('%s_source%', '$regreplace(\"%$%\", \"^.*[\\\\]\", \"%s_regex_escaped_wait_dir%\")')",
+              "type": "string"
+            }
+          ]
+        },
+        "outbounds": [
+          {
+            "type": "op_foreach",
+            "id": "20221019-0933-3262-3d6e-833a92800987"
+          },
+          {
+            "type": "op_hold",
+            "id": "20221019-1139-3908-5434-ce140ba7d048"
+          }
+        ],
+        "description": "Determine wait directory"
+      },
+      {
+        "id": "20221023-1030-0082-1171-02ed12f128db",
+        "type": "enc_av_mp4",
+        "custom_proc_guid": "",
+        "name": "H.264",
+        "slots": 1,
+        "hosts_group": 0,
+        "bypass": false,
+        "start_proc": false,
+        "pos_x": 593,
+        "pos_y": 170,
+        "execute_on": "success",
+        "outbounds": [
+          {
+            "type": "dest_folder",
+            "id": "20221019-1137-3510-0c83-bdb2d967e5a1"
+          },
+          {
+            "type": "other_textfile",
+            "id": "20221019-1138-0995-8811-49706aadd00c"
+          }
+        ]
+      }
+    ],
+    "version": "1.3.0.37",
+    "variable": {
+      "wf_size": 115
+    },
+    "farming": {
+      "hosts": [],
+      "include": false
+    }
+  },
+  "user_variables": {
+    "variables": [
+      {
+        "name": "s_files_to_wait_for",
+        "type": "string",
+        "data": ""
+      },
+      {
+        "name": "s_current_source_name",
+        "type": "string",
+        "data": ""
+      },
+      {
+        "name": "s_transcoded_files",
+        "type": "string",
+        "data": ""
+      },
+      {
+        "name": "s_final_deliver_path",
+        "type": "string",
+        "data": ""
+      },
+      {
+        "name": "s_final_deliver_extension",
+        "type": "string",
+        "data": ""
+      },
+      {
+        "name": "s_regex_escaped_wait_dir",
+        "type": "string",
+        "data": ""
+      },
+      {
+        "name": "i_ui_file_count",
+        "type": "integer",
+        "data": ""
+      },
+      {
+        "name": "s_final_deliver_file_prefix",
+        "type": "string",
+        "data": ""
+      }
+    ]
+  }
+}
