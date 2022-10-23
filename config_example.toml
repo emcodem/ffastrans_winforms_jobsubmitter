@@ -1,0 +1,21 @@
+# this file is toml format, it should reside in same folder as the main .exe, make sure you validate using some online toml validator before saving
+# especially make sure that backslash is escaped, e.g. instead of one backslash, just write 2.
+# the variable s_source is automatically filled with a json array of selected files
+# you can use %count% in a variable value, it will be replaced by the actual count of selected files
+
+[ffastrans]
+api = "http://localhost:65445/api/json/v2"
+
+[[workflow]]
+name = "emcodem_guisubmit_concat_different_formats"
+startproc = "20221022-1124-2650-58ea-85fbe7da8009"
+i_ui_file_count = "%count%"
+s_final_deliver_file_prefix = "concat_"
+s_final_deliver_path = "\\\\localhost\\c$\\temp"
+s_final_deliver_extension = "mp4"
+
+[[workflow]]
+name = "some_other_workflow_name"
+startproc = ""
+variablename1 = "value1"
+variablename2 = "value2"
