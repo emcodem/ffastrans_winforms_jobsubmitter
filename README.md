@@ -12,10 +12,12 @@ a configuration file example, place it next to the FFAStrans_Job_Submitter.exe a
 Configuration file minimal contents (toml formatting):
 
 [ffastrans]
+
 api = "http://localhost:65445/api/json/v2"
 
 
 [[workflow]]
+
 name = "emcodem_guisubmit_concat_different_formats"
 startproc = "20221022-1124-2650-58ea-85fbe7da8009"
 i_file_count = "%count%"
